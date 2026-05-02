@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LuminaAI | Professional Neural Image Enhancement</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --bg: #0f172a;
+            --card: #1e293b;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
+            --error: #ef4444;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            background: var(--card);
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .step { display: none; }
+        .step.active { display: block; animation: fadeIn 0.5s ease-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-size: 1.75rem; margin-bottom: 0.5rem; letter-spacing: -0.025em; }
+        p { color: var(--text-dim); line-height: 1.5; margin-bottom: 1.5rem; }
+
+        .hero-preview {
+            background: #000;
+            border-radius: 0.75rem;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+            border: 1px solid #334155;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid #334155;
+            background: #0f172a;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            outline: none;
+        }
+
+        input[type="text"]:focus { border-color: var(--primary); }
+
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s;
+            width: 100%;
+        }
+
+        button:hover { background: var(--primary-hover); }
+
+        /* Step 2: Runaway Button */
+        .button-arena {
+            height: 160px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #uploadBtn {
+            width: auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Step 3: Progress Bar */
+        .progress-wrapper {
+            background: #334155;
+            border-radius: 999px;
+            height: 12px;
+            width: 100%;
+            margin: 2rem 0 1rem;
+            overflow: hidden;
+        }
+
+        #progressBar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #818cf8);
+            transition: width 0.3s ease;
+        }
+
+        #etaText { font-weight: bold; color: var(--primary); margin-top: 0.5rem; }
+
+        /* Step 4: Final Reveal */
+        .reveal-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 1.5rem 0;
+        }
+
+        .reveal-grid div img {
+            width: 100%;
+            border-radius: 8px;
+            border: 2px solid #334155;
+        }
+
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 1.5rem;
+        }
+
+        .icon {
+            width: 40px;
+            height: 40px;
+            background: #334155;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="step1" class="step active">
+        <div class="hero-preview">
+            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=450&q=80" alt="Preview" style="width:100%; display:block; opacity: 0.7;">
+        </div>
+        <h1>LuminaAI</h1>
+        <p>Enter your full name to start your high-definition image transformation.</p>
+        <input type="text" id="userName" placeholder="Your Full Name">
+        <p id="nameError" style="color: var(--error); font-size: 0.85rem; height: 1rem; margin: 5px 0;"></p>
+        <button id="nameBtn" onclick="handleNameLogic()">Continue</button>
+    </div>
+
+    <div id="step2" class="step">
+        <h1>Source Image</h1>
+        <p>Please select the photo you wish to enhance. Our AI works best with clear portraits.</p>
+        <div class="button-arena">
+            <button id="uploadBtn" onmouseover="runAway()" onclick="nextStep(2, 3); startFakeLoading();">Upload Photo</button>
+        </div>
+    </div>
+
+    <div id="step3" class="step">
+        <h1 id="procHeader">Processing...</h1>
+        <div class="progress-wrapper">
+            <div id="progressBar"></div>
+        </div>
+        <p id="progressStatus">Initializing Neural Engine...</p>
+        <p id="etaText"></p>
+        <button id="showResultBtn" style="display:none;" onclick="nextStep(3, 4)">Show Result</button>
+    </div>
+
+    <div id="step4" class="step">
+        <h1>Transformation Ready!</h1>
+        <div class="reveal-grid">
+            <div>
+                <p style="font-size: 0.7rem; margin: 5px;">BEFORE</p>
+                <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80" alt="Original">
+            </div>
+            <div>
+                <p style="font-size: 0.7rem; margin: 5px;">AFTER</p>
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/George_Clooney_2016.jpg" alt="Celebrity">
+            </div>
+        </div>
+        <p><strong>Gotcha!</strong> You've been pranked by LuminaAI. You look great, but maybe not quite like George yet.</p>
+        <div class="social-icons">
+            <div class="icon">f</div>
+            <div class="icon">𝕏</div>
+            <div class="icon">in</div>
+        </div>
+        <button style="margin-top: 1.5rem; background: transparent; border: 1px solid var(--primary);" onclick="location.reload()">Try Again</button>
+    </div>
+</div>
+
+<script>
+    let nameStep = 0;
+    const celebAlias = "George Clooney";
+
+    function nextStep(current, next) {
+        document.getElementById(`step${current}`).classList.remove('active');
+        document.getElementById(`step${next}`).classList.add('active');
+    }
+
+    // --- STEP 1: Name Logic ---
+    function handleNameLogic() {
+        const input = document.getElementById('userName');
+        const error = document.getElementById('nameError');
+        const btn = document.getElementById('nameBtn');
+        const val = input.value.trim();
+
+        if (!val) { error.innerText = "Please enter a name."; return; }
+
+        if (nameStep === 0) {
+            // Prank 1: Swap letters
+            if (val.length > 3) {
+                input.value = val.substring(0, val.length - 2) + val.charAt(val.length - 1) + val.charAt(val.length - 2);
+            }
+            error.innerText = "Check spelling. We detected a typo.";
+            nameStep++;
+        } else if (nameStep === 1) {
+            // Prank 2: Celebrity Swap
+            input.value = celebAlias;
+            btn.innerText = "Oh, nevermind.";
+            error.innerText = "";
+            nameStep++;
+            btn.onclick = () => nextStep(1, 2);
+        }
+    }
+
+    // --- STEP 2: Runaway Button ---
+    let dodges = 0;
+    function runAway() {
+        const btn = document.getElementById('uploadBtn');
+        if (dodges < 6) {
+            const x = Math.random() * 200 - 100;
+            const y = Math.random() * 150 - 75;
+            btn.style.transform = `translate(${x}px, ${y}px)`;
+            dodges++;
+        } else {
+            btn.style.transform = `translate(0, 0)`;
+            btn.innerText = "Okay, fine. Click me.";
+        }
+    }
+
+    // --- STEP 3: Progress Bar Chaos ---
+    function startFakeLoading() {
+        const bar = document.getElementById('progressBar');
+        const status = document.getElementById('progressStatus');
+        const eta = document.getElementById('etaText');
+        const header = document.getElementById('procHeader');
+        let width = 0;
+
+        const loadInterval = setInterval(() => {
+            if (width < 99) {
+                width += 0.5;
+                bar.style.width = width + '%';
+                
+                if (width > 30) status.innerText = "Upscaling resolution...";
+                if (width > 70) status.innerText = "Applying celebrity-grade skin smoothing...";
+            } else {
+                clearInterval(loadInterval);
+                status.innerText = "Finalizing pixels...";
+                setTimeout(regress, 1000);
+            }
+        }, 30);
+
+        function regress() {
+            let currentWidth = 99;
+            const regInterval = setInterval(() => {
+                currentWidth -= 1;
+                bar.style.width = currentWidth + '%';
+                header.innerText = "Engine Error";
+                status.innerText = "Memory leak detected. Recalculating path...";
+                
+                if (currentWidth < 80) eta.innerText = "New ETA: 45 minutes";
+                if (currentWidth < 60) eta.innerText = "New ETA: 2 hours 15 minutes";
+                if (currentWidth < 40) eta.innerText = "New ETA: Tomorrow";
+
+                if (currentWidth <= 25) {
+                    clearInterval(regInterval);
+                    header.innerText = "Just kidding!";
+                    status.innerText = "Ready to see the 'new' you?";
+                    eta.innerText = "";
+                    document.getElementById('showResultBtn').style.display = "block";
+                }
+            }, 80);
+        }
+    }
+</script>
+
+</body>
+</html>
