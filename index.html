@@ -200,11 +200,11 @@
             </div>
         </div>
         <p><strong>Gotcha!</strong> You've been pranked by LuminaAI. You look great, but maybe not quite like George yet.</p>
-        <div class="social-icons">
-            <div class="icon">f</div>
-            <div class="icon">𝕏</div>
-            <div class="icon">in</div>
-        </div>
+       <div class="share-container" style="margin-top: 1.5rem;">
+    <button id="copyBtn" onclick="copyPrankLink()" style="background: #334155; display: flex; align-items: center; justify-content: center; gap: 10px;">
+        <span id="copyIcon">🔗</span> <span id="copyText">Copy & Share Link</span>
+    </button>
+</div>
         <button style="margin-top: 1.5rem; background: transparent; border: 1px solid var(--primary);" onclick="location.reload()">Try Again</button>
     </div>
 </div>
@@ -324,6 +324,34 @@ uploadBtn.addEventListener('touchstart', attemptEscape, {passive: false});
             }, 80);
         }
     }
+    async function copyPrankLink() {
+    const btn = document.getElementById('copyBtn');
+    const text = document.getElementById('copyText');
+    const icon = document.getElementById('copyIcon');
+    
+    // The link to your prank site
+    const shareUrl = window.location.href;
+
+    try {
+        await navigator.clipboard.writeText(shareUrl);
+        
+        // Success State
+        btn.style.background = "#22c55e"; // Turns green
+        text.innerText = "Link Copied!";
+        icon.innerText = "✅";
+        
+        // Reset after 3 seconds
+        setTimeout(() => {
+            btn.style.background = "#334155";
+            text.innerText = "Copy & Share Link";
+            icon.innerText = "🔗";
+        }, 3000);
+        
+    } catch (err) {
+        // Fallback for older browsers
+        alert("Could not copy automatically. Here is the link: " + shareUrl);
+    }
+}
 </script>
 
 </body>
