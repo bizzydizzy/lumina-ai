@@ -122,14 +122,19 @@
 
         #etaText { font-weight: bold; color: var(--primary); margin-top: 0.5rem; }
 
-        /* Step 4: Final Reveal */
-        .reveal-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 1.5rem 0;
-        }
+       /* Step 4: Final Reveal (Single-Image View) */
+.reveal-grid {
+    display: flex; /* Switched from grid to flex for centring */
+    justify-content: center;
+    align-items: center;
+    margin: 1.5rem 0;
+    max-width: 300px; /* Adjust this value if needed */
+    margin-left: auto;
+    margin-right: auto;
+}
 
+.reveal-grid div:first-child { display: none; } /* This hides the "Before" photo */
+        
         .reveal-grid div img {
             width: 100%;
             border-radius: 8px;
@@ -188,18 +193,17 @@
     </div>
 
     <div id="step4" class="step">
-        <h1>Transformation Ready!</h1>
-        <div class="reveal-grid">
-            <div>
-                <p style="font-size: 0.7rem; margin: 5px;">BEFORE</p>
-                <img src="just-michael.png">
-            </div>
-            <div>
-                <p style="font-size: 0.7rem; margin: 5px;">AFTER</p>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/8d/George_Clooney_2016.jpg" alt="Celebrity">
-            </div>
+    <h1>Enhancement Complete!</h1>
+    <div class="reveal-grid">
+        <div>
+            <img src="https://images.unsplash.com/..." alt="Original">
         </div>
-        <p><strong>Gotcha!</strong> You've been pranked by LuminaAI. You look great, but maybe not quite like George yet.</p>
+        <div>
+            <img src="https://upload.wikimedia.org/..." alt="Celebrity">
+        </div>
+    </div>
+    <p>We've found your perfect match! 😂 You've been pranked by LuminaAI.</p>
+        
        <div class="share-container" style="margin-top: 1.5rem;">
     <button id="copyBtn" onclick="copyPrankLink()" style="background: #334155; display: flex; align-items: center; justify-content: center; gap: 10px;">
         <span id="copyIcon">🔗</span> <span id="copyText">Copy & Share Link</span>
