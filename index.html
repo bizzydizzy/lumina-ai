@@ -244,20 +244,41 @@
         }
     }
 
-    // --- STEP 2: Runaway Button ---
-    let dodges = 0;
-    function runAway() {
-        const btn = document.getElementById('uploadBtn');
-        if (dodges < 6) {
-            const x = Math.random() * 200 - 100;
-            const y = Math.random() * 150 - 75;
-            btn.style.transform = `translate(${x}px, ${y}px)`;
-            dodges++;
-        } else {
-            btn.style.transform = `translate(0, 0)`;
-            btn.innerText = "Okay, fine. Click me.";
-        }
+   // --- STEP 2 LOGIC (Runaway Button - Mobile Friendly) ---
+const uploadBtn = document.getElementById('uploadBtn');
+let dodges = 0;
+
+// This function handles the "Escape"
+function attemptEscape(e) {
+    if (dodges < 6) {
+        // Prevent the actual click from happening
+        if (e) e.preventDefault();
+        
+        const x = Math.random() * 200 - 100;
+        const y = Math.random() * 150 - 75;
+        
+        uploadBtn.style.transform = `translate(${x}px, ${y}px)`;
+        dodges++;
+        
+        // On mobile, we change the text to show it's "reacting"
+        if (dodges === 1) uploadBtn.innerText = "Wait...";
+        if (dodges === 3) uploadBtn.innerText = "Catch me!";
+    } else {
+        // After 6 tries, we let them click it
+        uploadBtn.style.transform = `translate(0, 0)`;
+        uploadBtn.innerText = "Okay, fine. Click me.";
+        
+        // Remove the prevention so the next tap works
+        uploadBtn.removeEventListener('touchstart', attemptEscape);
+        uploadBtn.onmouseover = null; 
     }
+}
+
+// Trigger on Desktop Hover
+uploadBtn.onmouseover = attemptEscape;
+
+// Trigger on Mobile Touch (Before the click registers)
+uploadBtn.addEventListener('touchstart', attemptEscape, {passive: false});
 
     // --- STEP 3: Progress Bar Chaos ---
     function startFakeLoading() {
